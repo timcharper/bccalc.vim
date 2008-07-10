@@ -10,6 +10,7 @@ vnoremap ;bc "ey:call CalcLines(1)<CR>
 noremap  ;bc "eyy:call CalcLines(0)<CR>
 "noremap  <Leader>bc "eyy:call<SID>CalcBC(0)<CR>
 
+vnoremap ;abc "ey:call CalcAverage(1)<CR>
 " ---------------------------------------------------------------------
 "  Calculate:
 "    clean up an expression, pass it to bc, return answer
@@ -86,5 +87,14 @@ function! CalcLines(vsl)
 		exec "normal a" . answer
 	else
 		echo "answer = " . answer
+    call setreg('"', answer)
 	endif
+endfunction
+
+function! CalcAverage(vsl)
+  let items = split(@e, "\n")
+  " filter out blank items
+  let items = filter(items, 'v:val !~ "^\\s*$"')
+  let @e = "(" . join(items, " + ") . ") / " . len(items)
+  call CalcLines(a:vsl)
 endfunction
