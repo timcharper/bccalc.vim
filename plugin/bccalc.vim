@@ -10,7 +10,8 @@ vnoremap ;bc "ey:call CalcLines(1)<CR>
 noremap  ;bc "eyy:call CalcLines(0)<CR>
 "noremap  <Leader>bc "eyy:call<SID>CalcBC(0)<CR>
 
-vnoremap ;abc "ey:call CalcAverage(1)<CR>
+command! -nargs=0 -range Average call CalcAverage(getbufline(bufname("%"), <line1>,<line2>))
+" getbufline(bufname(""), 10,13)
 " ---------------------------------------------------------------------
 "  Calculate:
 "    clean up an expression, pass it to bc, return answer
@@ -91,10 +92,17 @@ function! CalcLines(vsl)
 	endif
 endfunction
 
-function! CalcAverage(vsl)
-  let items = split(@e, "\n")
-  " filter out blank items
-  let items = filter(items, 'v:val !~ "^\\s*$"')
-  let @e = "(" . join(items, " + ") . ") / " . len(items)
-  call CalcLines(a:vsl)
+function! CalcFilterBlankLines(lines)
+  return filter(a:lines, 'v:val !~ "^\\s*$"')
+endfunction
+
+function! CalcAverage(lines)
+  " filter out blank lines     
+  let lines = CalcFilterBlankLines(a:lines)
+
+  let expr = "(" . join(lines, " + ") . ") / " . len(lines)
+  let answer = Calculate(expr)
+  
+  echo "Yanked average of '" . answer . "' to register \""
+  call setreg('"', answer)
 endfunction
