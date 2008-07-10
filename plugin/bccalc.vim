@@ -11,6 +11,7 @@ noremap  ;bc "eyy:call CalcLines(0)<CR>
 "noremap  <Leader>bc "eyy:call<SID>CalcBC(0)<CR>
 
 command! -nargs=0 -range Average call CalcAverage(getbufline(bufname("%"), <line1>,<line2>))
+command! -nargs=0 -range Total call CalcTotal(getbufline(bufname("%"), <line1>,<line2>))
 " getbufline(bufname(""), 10,13)
 " ---------------------------------------------------------------------
 "  Calculate:
@@ -97,12 +98,18 @@ function! CalcFilterBlankLines(lines)
 endfunction
 
 function! CalcAverage(lines)
-  " filter out blank lines     
   let lines = CalcFilterBlankLines(a:lines)
 
   let expr = "(" . join(lines, " + ") . ") / " . len(lines)
   let answer = Calculate(expr)
   
   echo "Yanked average of '" . answer . "' to register \""
+  call setreg('"', answer)
+endfunction
+
+function! CalcTotal(lines)
+  let lines = CalcFilterBlankLines(a:lines)
+  let answer = Calculate(join(lines, " + "))
+  echo "Yanked total of '" . answer . "' to register \""
   call setreg('"', answer)
 endfunction
