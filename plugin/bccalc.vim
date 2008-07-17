@@ -3,11 +3,11 @@
 command! -nargs=+ Calculate echo "<args> = " . Calculate ("<args>")
 
 "" calculate expression from selection, pick a mapping, or use the Leader form
-vnoremap ;bc "ey:call CalcLines(1)<CR>
+vnoremap \bc "ey:call CalcLines(1)<CR>
 "vnoremap <Leader>bc "ey:call<SID>CalcBC(1)<CR>
 
 "" calculate expression on current line, pick a mapping, or use the Leader
-noremap  ;bc "eyy:call CalcLines(0)<CR>
+noremap  \bc "eyy:call CalcLines(0)<CR>
 "noremap  <Leader>bc "eyy:call<SID>CalcBC(0)<CR>
 
 command! -nargs=0 -range Average call CalcAverage(getbufline(bufname("%"), <line1>,<line2>))
